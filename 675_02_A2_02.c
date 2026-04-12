@@ -1,93 +1,90 @@
 #include <stdio.h>
-#include <stdlib.h>
+#define s 100
 
-/* part (i) */
-int* input_array(int *size, int *max_size)
+int* input_array(int *array, int *length)
 {
-    int *a = (int*)malloc((*max_size) * sizeof(int));
-    int val, i = 0;
+    int i = 0, x;
 
-    if(a == NULL)
-        return NULL;
+    printf("Enter elements (negative to stop):\n");
 
-    printf("Enter values (negative to stop):\n");
-
-    while(i < *max_size)
+    while(i < s)
     {
-        scanf("%d", &val);
-        if(val < 0)
+        scanf("%d", &x);
+        if(x < 0)
             break;
 
-        a[i] = val;
+        array[i] = x;
         i++;
     }
 
-    *size = i;
-    return a;
+    *length = i;
+    return length;
 }
 
-/* part (ii) */
-void reverse_array(int *a, int *size)
+int reverse_array(int *array, int *length)
 {
-    int i = 0, j = *size - 1, temp;
+    int i = 0, j = *length - 1, temp;
 
     while(i < j)
     {
-        temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
         i++;
         j--;
     }
+    return 0;
 }
 
-/* part (iii) */
-int check_unique_array(int *a, int *size)
+int* check_unique_array(int *array, int *length)
 {
+    static int flag;
     int i, j;
 
-    for(i = 0; i < *size; i++)
+    flag = 1;
+
+    for(i = 0; i < *length; i++)
     {
-        for(j = i + 1; j < *size; j++)
+        for(j = i + 1; j < *length; j++)
         {
-            if(a[i] == a[j])
-                return 0;
+            if(array[i] == array[j])
+            {
+                flag = 0;
+                return &flag;
+            }
         }
     }
-    return 1;
+
+    return &flag;
 }
 
 int main()
 {
-    int size = 0, max;
-    int *arr, i;
+    int len = 0;
+    int *length = &len;
+    int array[s];
+    int *unique, i;
 
-    printf("Enter max size: ");
-    scanf("%d", &max);
+    printf("Max size of an array = 100\n");
 
-    arr = input_array(&size, &max);
-
-    if(arr == NULL)
-    {
-        printf("Memory error\n");
-        return 0;
-    }
+    input_array(array, length);
 
     printf("Array: ");
-    for(i = 0; i < size; i++)
-        printf("%d ", arr[i]);
+    for(i = 0; i < *length; i++)
+        printf("%d ", array[i]);
 
-    reverse_array(arr, &size);
+    reverse_array(array, length);
 
     printf("\nAfter reverse: ");
-    for(i = 0; i < size; i++)
-        printf("%d ", arr[i]);
+    for(i = 0; i < *length; i++)
+        printf("%d ", array[i]);
 
-    if(check_unique_array(arr, &size))
+    unique = check_unique_array(array, length);
+
+    if(*unique == 1)
         printf("\nUnique elements\n");
     else
         printf("\nDuplicates present\n");
 
-    free(arr);
     return 0;
 }
